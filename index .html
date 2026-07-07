@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sena Nur Ateş — Portföy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@2.15.1/devicon.min.css">
+<style>
+  :root{
+    --bg:#0A0A10;
+    --bg-2:#111119;
+    --card:#15151F;
+    --line:#24242F;
+    --text:#F2F1F6;
+    --text-soft:#9A99A8;
+    --purple:#8B5CF6;
+    --purple-soft:#8B5CF61a;
+  }
+  *{box-sizing:border-box;}
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Poppins', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .script{ font-family:'Caveat', cursive; }
+  .mono{ font-family:'Space Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:1100px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- CONSENT GATE ---------- */
+  #gate{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(6,6,10,.72);
+    backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  #gate.hidden{ display:none; }
+  .gate-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    max-width:560px; width:100%; max-height:86vh;
+    display:flex; flex-direction:column;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,.6);
+  }
+  .gate-head{ padding:24px 26px 14px; border-bottom:1px solid var(--line); }
+  .gate-head h2{ font-size:19px; font-weight:700; margin:0 0 4px; }
+  .gate-head p{ margin:0; font-size:13px; color:var(--text-soft); }
+  .gate-body{ padding:18px 26px; overflow-y:auto; font-size:13.5px; line-height:1.65; color:#c7c6d1; }
+  .gate-body h3{ font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--purple); margin:16px 0 6px; }
+  .gate-body h3:first-child{ margin-top:0; }
+  .gate-body p{ margin:0 0 10px; }
+  .gate-body ul{ margin:0 0 10px; padding-left:18px; }
+  .gate-body li{ margin-bottom:4px; }
+  .gate-foot{ padding:16px 26px 22px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap; }
+  .btn{ font-family:'Poppins',sans-serif; font-weight:600; font-size:13.5px; padding:11px 18px; border-radius:100px; border:1px solid var(--line); cursor:pointer; background:transparent; color:var(--text); }
+  .btn.primary{ background:var(--purple); border-color:var(--purple); color:#fff; flex:1 1 auto; }
+  .btn:hover{ opacity:.88; }
+
+  main{ filter:blur(6px); transition:filter .3s ease; }
+  main.revealed{ filter:none; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 0;
+  }
+  .logo{ font-weight:700; font-size:18px; letter-spacing:-.01em; }
+  .logo i{ color:var(--purple); margin-left:4px; }
+  .nav-links{ display:flex; gap:34px; list-style:none; margin:0; padding:0; }
+  .nav-links a{ text-decoration:none; font-size:14.5px; color:var(--text); opacity:.9; }
+  .nav-links a:hover{ color:var(--purple); }
+  .cv-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--purple); color:var(--purple);
+    padding:9px 18px; border-radius:100px; text-decoration:none; font-size:13.5px; font-weight:600;
+  }
+  .cv-btn:hover{ background:var(--purple-soft); }
+  @media (max-width:820px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.1fr .9fr; gap:40px;
+    align-items:center;
+    padding:36px 0 60px;
+  }
+  @media (max-width:820px){ .hero{ grid-template-columns:1fr; text-align:center; } }
+  .wave{ font-size:15px; color:var(--text-soft); margin:0 0 10px; }
+  .headline{ font-size:52px; font-weight:800; line-height:1.05; margin:0 0 14px; }
+  .headline .accent{ color:var(--purple); }
+  .role{ font-family:'Space Mono', monospace; font-size:18px; color:var(--purple); margin:0 0 18px; }
+  .role::after{ content:"|"; animation:blink 1s step-start infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .lede{ font-size:15px; line-height:1.75; color:var(--text-soft); max-width:440px; margin:0 0 26px; }
+  @media (max-width:820px){ .lede{ margin-left:auto; margin-right:auto; } }
+  .cta-row{ display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+  @media (max-width:820px){ .cta-row{ justify-content:center; } }
+  .cta-primary{
+    background:var(--purple); color:#fff; text-decoration:none;
+    padding:13px 22px; border-radius:100px; font-weight:600; font-size:14.5px;
+    display:inline-flex; align-items:center; gap:8px;
+    box-shadow:0 12px 26px -10px #8b5cf690;
+  }
+  .cta-secondary{
+    border:1px solid var(--line); color:var(--text); text-decoration:none;
+    padding:13px 22px; border-radius:100px; font-weight:600; font-size:14.5px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .socials{ display:flex; gap:12px; }
+  @media (max-width:820px){ .socials{ justify-content:center; } }
+  .socials a{
+    width:40px; height:40px; border:1px solid var(--line); border-radius:10px;
+    display:flex; align-items:center; justify-content:center; text-decoration:none;
+    color:var(--text);
+  }
+  .socials a:hover{ border-color:var(--purple); color:var(--purple); }
+
+  .photo-wrap{ position:relative; display:flex; justify-content:center; }
+  .photo{
+    width:340px; height:340px; border-radius:50%;
+    background:linear-gradient(135deg,#8B5CF6,#4C1D95);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Space Mono',monospace; font-size:16px; text-align:center;
+    border:1px solid var(--line);
+    box-shadow:0 0 0 10px #8b5cf610, 0 40px 60px -20px #8b5cf640;
+    padding:20px;
+  }
+  .sparkle{ position:absolute; color:var(--purple); }
+  .s1{ top:6%; right:4%; font-size:20px; } .s2{ top:0; right:16%; font-size:12px; }
+  .s3{ bottom:8%; left:2%; font-size:22px; }
+
+  /* ---------- SECTION HEADER ---------- */
+  .sec-title{ font-family:'Caveat',cursive; font-size:34px; font-weight:700; margin:0 0 26px; position:relative; display:inline-block; }
+  .sec-title::after{ content:""; position:absolute; left:0; bottom:-4px; width:70%; height:3px; background:var(--purple); border-radius:2px; }
+  .sec-row{ display:flex; align-items:baseline; justify-content:space-between; }
+  .sec-link{ color:var(--purple); text-decoration:none; font-size:14px; font-weight:600; }
+
+  section{ padding:50px 0; border-top:1px solid var(--line); }
+
+  /* ---------- WHAT I DO ---------- */
+  .grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  @media (max-width:900px){ .grid4{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .grid4{ grid-template-columns:1fr; } }
+  .do-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px; }
+  .do-card i{ color:var(--purple); font-size:22px; margin-bottom:14px; display:block; }
+  .do-card h4{ margin:0 0 8px; font-size:15.5px; }
+  .do-card p{ margin:0; font-size:13.5px; color:var(--text-soft); line-height:1.6; }
+
+  /* ---------- PROJECTS ---------- */
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:26px; }
+  @media (max-width:900px){ .grid3{ grid-template-columns:1fr; } }
+  .proj-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px; }
+  .proj-top{ display:flex; align-items:start; justify-content:space-between; margin-bottom:14px; }
+  .proj-icon{ width:38px; height:38px; border-radius:50%; background:var(--purple-soft); color:var(--purple); display:flex; align-items:center; justify-content:center; }
+  .proj-card h4{ margin:0 0 8px; font-size:15.5px; }
+  .proj-card p{ margin:0 0 16px; font-size:13.5px; color:var(--text-soft); line-height:1.6; }
+  .tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{ font-size:11.5px; padding:5px 10px; border-radius:100px; background:#1c1c28; color:#b9b8c4; }
+
+  /* ---------- TECH ---------- */
+  .tech-row{ display:flex; flex-wrap:wrap; gap:34px; justify-content:flex-start; margin-top:20px; }
+  .tech-item{ display:flex; flex-direction:column; align-items:center; gap:8px; width:70px; }
+  .tech-item i{ font-size:34px; }
+  .tech-item span{ font-size:12px; color:var(--text-soft); }
+
+  /* ---------- QUOTE + CONTACT ---------- */
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:820px){ .grid2{ grid-template-columns:1fr; } }
+  .quote-card, .contact-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px; }
+  .quote-card .mark{ font-family:'Caveat',cursive; font-size:38px; color:var(--purple); line-height:.6; }
+  .quote-card p{ font-family:'Caveat',cursive; font-size:22px; line-height:1.4; margin:8px 0 16px; }
+  .contact-card h4{ margin:0 0 8px; font-size:16px; }
+  .contact-card p{ margin:0 0 18px; font-size:13.5px; color:var(--text-soft); line-height:1.6; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:26px 0 40px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .foot-left{ font-weight:700; font-size:14px; }
+  .foot-mid{ font-size:12.5px; color:var(--text-soft); display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .foot-mid button{ background:none; border:none; color:var(--text-soft); text-decoration:underline; cursor:pointer; font-size:12.5px; font-family:inherit; padding:0; }
+</style>
+</head>
+<body>
+
+<!-- CONSENT GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-head">
+      <h2>Devam etmeden önce</h2>
+      <p>Bu portföyü ziyaret etmeden önce lütfen aşağıdaki bilgilendirmeyi oku.</p>
+    </div>
+    <div class="gate-body">
+      <h3>Ne topluyoruz</h3>
+      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinden türetilen yaklaşık konum (şehir/ülke seviyesinde).</p>
+      <h3>Ne toplamıyoruz</h3>
+      <p>Hangi sosyal medya hesabından tıkladığını, adını ya da kimliğini belirleyecek hiçbir bilgi otomatik olarak toplanmaz. İletişim formunu doldurmak tamamen isteğe bağlıdır.</p>
+      <h3>Bu bilgiler ne için kullanılıyor</h3>
+      <p>Veriler yalnızca sayfa sahibinin ziyaretçi profiline dair genel bir fikir edinmesi için kullanılır; üçüncü taraflarla paylaşılmaz, satılmaz.</p>
+      <h3>Haklarınız</h3>
+      <ul>
+        <li>"Reddet" seçeneğiyle kayıt oluşturulmadan sayfayı görüntüleyebilirsin.</li>
+        <li>Bu bildirimi istediğin an sayfanın altındaki bağlantıdan tekrar okuyabilirsin.</li>
+      </ul>
+    </div>
+    <div class="gate-foot">
+      <button class="btn" id="declineBtn">Reddet</button>
+      <button class="btn primary" id="acceptBtn">Kabul Ediyorum</button>
+    </div>
+  </div>
+</div>
+
+<main id="page">
+<div class="wrap">
+
+  <nav>
+    <div class="logo">Sena Nur Ateş <i class="fa-solid fa-sparkles"></i></div>
+    <ul class="nav-links">
+      <li><a href="#hakkimda">Hakkımda</a></li>
+      <li><a href="#projeler">Projeler</a></li>
+      <li><a href="#sertifikalar">Sertifikalar</a></li>
+      <li><a href="#iletisim">İletişim</a></li>
+    </ul>
+    <a href="cv.pdf" target="_blank" class="cv-btn">CV indir <i class="fa-solid fa-download"></i></a>
+  </nav>
+
+  <section class="hero" style="border:none; padding-top:10px;" id="hakkimda">
+    <div>
+      <p class="wave">Merhaba! 👋</p>
+      <h1 class="headline" style="font-size:72px;">Ben <span class="accent">Sena Nur Ateş.</span></h1>
+      <p class="role">Bilgisayar Mühendisliği 4. Sınıf Öğrencisi</p>
+      <p class="lede">Çanakkale Onsekiz Mart Üniversitesi'nde Bilgisayar Mühendisliği okuyorum, Anadolu Üniversitesi Bilgisayar Programcılığı mezunuyum. Siber güvenlik, yazılım geliştirme ve savunma sanayii alanlarına ilgi duyuyorum; öğrenmeyi hiç bırakmıyorum.</p>
+      <div class="cta-row">
+        <a href="#projeler" class="cta-primary">Projelerime Göz At <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="cv.pdf" target="_blank" class="cta-secondary">CV İndir <i class="fa-solid fa-download"></i></a>
+      </div>
+      <div class="socials">
+        <a href="#" target="_blank" rel="noopener" title="LinkedIn linkini ekle"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" target="_blank" rel="noopener" title="GitHub linkini ekle"><i class="fa-brands fa-github"></i></a>
+        <a href="mailto:senanyrates@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+    <div class="photo-wrap">
+      <i class="fa-solid fa-sparkle sparkle s1"></i>
+      <i class="fa-solid fa-sparkle sparkle s2"></i>
+      <i class="fa-solid fa-sparkle sparkle s3"></i>
+      <img src="foto.jpeg" alt="Sena Nur Ateş" class="photo" style="object-fit:cover; padding:0;">
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">Ne Yapıyorum?</h2>
+    <div class="grid4">
+      <div class="do-card"><i class="fa-solid fa-shield-halved"></i><h4>Siber Güvenlik</h4><p>Etik hackleme, ağ güvenliği ve SIEM temelleriyle ilgileniyorum.</p></div>
+      <div class="do-card"><i class="fa-solid fa-code"></i><h4>Yazılım Geliştiriyorum</h4><p>C, C++, C#, Java ve Python ile algoritma ve uygulama geliştiriyorum.</p></div>
+      <div class="do-card"><i class="fa-solid fa-jet-fighter"></i><h4>Savunma Sanayii</h4><p>Savunma sanayii alanına ve teknik projelere ilgi duyuyorum.</p></div>
+      <div class="do-card"><i class="fa-solid fa-users"></i><h4>Ekip & Liderlik</h4><p>Topluluk yönetimi ve proje sunumlarında aktif rol alıyorum.</p></div>
+    </div>
+  </section>
+
+  <section id="projeler">
+    <div class="sec-row">
+      <h2 class="sec-title">Seçtiğim Projeler</h2>
+    </div>
+    <div class="grid3">
+      <div class="proj-card">
+        <div class="proj-top"><h4>Kafe Restoran Takip Sistemi</h4><div class="proj-icon"><i class="fa-solid fa-utensils"></i></div></div>
+        <p>Tam işlevsel bir kafe-restoran yönetim sistemi. Siparişleri takip etme, para hesaplama, müşteri veritabanı ve raporlama özellikleri. Akademik proje olarak 100/100 puan aldı.</p>
+        <div class="tags"><span class="tag">Java</span><span class="tag">SQL</span><span class="tag">OOP</span></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><h4>Hastane Randevu Sistemi</h4><div class="proj-icon"><i class="fa-solid fa-hospital"></i></div></div>
+        <p>Doktor-hasta yönetimi, randevu scheduling ve veritabanı entegrasyonu. SOLID prensipleri ile tasarlanmış, gerçek dünya senaryolarına uyumlu sistem. Proje notu: 100/100.</p>
+        <div class="tags"><span class="tag">C#</span><span class="tag">SQL Server</span><span class="tag">Veri Tabanı</span></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><h4>Oyun Geliştirme</h4><div class="proj-icon"><i class="fa-solid fa-gamepad"></i></div></div>
+        <p>2 tamamlanan oyun projesi. Şu anda 3. oyunu geliştiriyorum. Oyun mekanikleri, karakter kontrolü, fizik motoru ve UI tasarımı konularında deneyim kazandım.</p>
+        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game Logic</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:14px;">
+      <h4 style="margin:0 0 10px;">Netflix Library System</h4>
+      <p style="margin:0 0 10px; font-size:13.5px; color:var(--text-soft); line-height:1.6;">Staj kapsamında geliştirdiğim veritabanı ve sistem yazılımı. Film ve kitap yönetimi, kullanıcı otentikasyonu, karmaşık sorgulamalar ve veri analizi özelliklerine sahip. Java ve BigQuery entegrasyonu ile geliştirildi.</p>
+      <div class="tags"><span class="tag">Java</span><span class="tag">BigQuery</span><span class="tag">OOP</span></div>
+    </div>
+  </section>
+
+  <section id="teknolojiler" style="border-top:1px solid var(--line); padding:50px 0;">
+    <h2 class="sec-title">Kullandığım Teknolojiler & Araçlar</h2>
+    <p style="font-size:13.5px; color:var(--text-soft); margin-bottom:24px;">Akademik projeler ve profesyonel geliştirme kapsamında kullandığım teknolojiler:</p>
+    <div class="tech-row">
+      <div class="tech-item"><i class="devicon-c-plain colored"></i><span>C</span></div>
+      <div class="tech-item"><i class="devicon-cplusplus-plain colored"></i><span>C++</span></div>
+      <div class="tech-item"><i class="devicon-csharp-plain colored"></i><span>C#</span></div>
+      <div class="tech-item"><i class="devicon-java-plain colored"></i><span>Java</span></div>
+      <div class="tech-item"><i class="devicon-python-plain colored"></i><span>Python</span></div>
+      <div class="tech-item"><i class="devicon-html5-plain colored"></i><span>HTML</span></div>
+      <div class="tech-item"><i class="devicon-css3-plain colored"></i><span>CSS</span></div>
+      <div class="tech-item"><i class="devicon-mysql-plain colored"></i><span>SQL</span></div>
+      <div class="tech-item"><i class="devicon-git-plain colored"></i><span>Git</span></div>
+      <div class="tech-item"><i class="devicon-linux-plain colored"></i><span>Linux</span></div>
+      <div class="tech-item"><i class="fa-solid fa-database" style="font-size:34px; color:#1f6feb;"></i><span>BigQuery</span></div>
+    </div>
+  </section>
+
+  <section id="sertifikalar">
+    <h2 class="sec-title">Sertifikalar & Eğitim</h2>
+    <p style="font-size:13.5px; color:var(--text-soft); margin-bottom:18px;">Profesyonel gelişimim kapsamında tamamladığım sertifika ve eğitim programları:</p>
+    <div class="tags" style="gap:10px; margin-bottom:22px;">
+      <span class="tag" style="font-size:13px; padding:8px 14px;">🛡️ Etik Hacker — Udemy</span>
+      <span class="tag" style="font-size:13px; padding:8px 14px;">🔐 Siber Güvenlik & SIEM — BTK</span>
+      <span class="tag" style="font-size:13px; padding:8px 14px;">🚀 CyberStart — IBM</span>
+      <span class="tag" style="font-size:13px; padding:8px 14px;">☕ Java Programlama — BTK</span>
+    </div>
+    <p style="font-size:13.5px; color:var(--text-soft);"><strong>Diller:</strong> İngilizce (B2 — Profesyonel Çalışma Yeterliliği), Almanca (A1)</p>
+  </section>
+
+  <section id="iletisim">
+    <div class="grid2">
+      <div class="quote-card">
+        <div class="mark">"</div>
+        <p>Analitik düşünerek karmaşık problemleri çözmek, algoritmaları optimize etmek ve öğrenmeyi hiç bırakmamak — bu benim yazılım mühendisliği felsefem.</p>
+        <i class="fa-regular fa-heart" style="color:var(--purple);"></i>
+      </div>
+      <div class="contact-card">
+        <h4>İletişime Geç!</h4>
+        <p>Benimle tanışmak veya bir şeyler konuşmak istersen, her zaman ulaşabilirsin.</p>
+        <a href="mailto:senanyrates@gmail.com" class="cta-primary">Mail Gönder <i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+  </section>
+
+
+  <footer>
+    <div class="foot-left">Sena Nur Ateş <i class="fa-solid fa-sparkles" style="color:var(--purple);"></i></div>
+    <div class="foot-mid">
+      <span>© 2026 Tüm hakları saklıdır.</span>
+      <button id="reopenNotice">Gizlilik bildirimi</button>
+    </div>
+    <i class="fa-regular fa-heart" style="color:var(--purple);"></i>
+  </footer>
+
+</div>
+</main>
+
+<script>
+/* ============================================================
+   AYAR: Google Apps Script "Web App" URL'ini buraya yapıştır.
+   (apps-script.gs dosyasındaki kodu Sheet > Uzantılar > Apps Script'e
+    yapıştırıp Deploy > New deployment > Web app olarak yayınladıktan
+    sonra aldığın .../exec ile biten URL)
+   ============================================================ */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxhz2FPxkPUD-fxC1FCO85Nfydq6-wb9LQgHjao8ZqzuBUGtDKkkicqrspUTwRhXuO7/exec";
+
+function send(payload){
+  if(!SHEET_URL || SHEET_URL.startsWith("PASTE_")) return;
+  // text/plain kullanılıyor: Apps Script preflight (OPTIONS) isteklerini
+  // desteklemediği için application/json CORS hatası verir.
+  fetch(SHEET_URL, {
+    method:"POST",
+    headers:{ "Content-Type":"text/plain" },
+    body: JSON.stringify(payload)
+  }).catch(()=>{});
+}
+
+function shortDevice(){
+  const ua = navigator.userAgent;
+  const platform = /Android/i.test(ua) ? "Android"
+    : /iPhone|iPad/i.test(ua) ? "iOS"
+    : /Windows/i.test(ua) ? "Windows"
+    : /Mac/i.test(ua) ? "Mac"
+    : "Bilinmiyor";
+  const app = /Instagram/i.test(ua) ? "Instagram uygulaması"
+    : /TikTok/i.test(ua) ? "TikTok uygulaması"
+    : /Twitter|X\//i.test(ua) ? "X/Twitter uygulaması"
+    : "Tarayıcı";
+  return `${platform} · ${app}`;
+}
+
+async function logVisit(){
+  const time = new Date().toLocaleString("tr-TR", { timeZone:"Europe/Istanbul" });
+  const ref = document.referrer || "doğrudan / bilinmiyor";
+  const device = shortDevice();
+  
+  // Gerçek konum al (kullanıcı izin verirse)
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        let geo = "konum alınamadı";
+        
+        // Koordinatları şehre çevir
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+          const d = await r.json();
+          geo = d.address.city || d.address.town || d.address.county || "Bilinmiyor";
+        } catch(e) {
+          geo = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+        }
+        
+        send({ type: "ziyaret", time, geo, device, ref });
+      },
+      (error) => {
+        // İzin verilmezse IP kullansın
+        console.log("Konum izni reddedildi, IP kullanılıyor");
+        fetchIPLocation(time, device, ref);
+      }
+    );
+  } else {
+    fetchIPLocation(time, device, ref);
+  }
+}
+
+async function fetchIPLocation(time, device, ref) {
+  let geo = "konum alınamadı";
+  try{
+    const r = await fetch("https://ipwho.is/");
+    const d = await r.json();
+    if(d.city && d.country) {
+      geo = d.city + ", " + d.country;
+    }
+  }catch(e){}
+  
+  send({ type: "ziyaret", time, geo, device, ref });
+}
+
+const gate = document.getElementById("gate");
+const page = document.getElementById("page");
+
+function reveal(withLogging){
+  gate.classList.add("hidden");
+  page.classList.add("revealed");
+  if(withLogging){ logVisit(); }
+}
+
+// İlk açılışta daima gate göster — localStorage kontrol etme
+
+
+document.getElementById("acceptBtn").addEventListener("click", ()=>{
+  localStorage.setItem("consent","accepted");
+  reveal(true);
+});
+document.getElementById("declineBtn").addEventListener("click", ()=>{
+  localStorage.setItem("consent","declined");
+  reveal(false);
+});
+document.getElementById("reopenNotice").addEventListener("click", ()=>{
+  gate.classList.remove("hidden");
+});
+</script>
+</body>
+</html>
