@@ -240,7 +240,7 @@
     </div>
     <div class="gate-body">
       <h3>Ne topluyoruz</h3>
-      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinde[...]
+      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinde bulunduğu şehir.</p>
       <h3>Ne toplamıyoruz</h3>
       <p>Hangi sosyal medya hesabından tıkladığını, adını ya da kimliğini belirleyecek hiçbir bilgi otomatik olarak toplanmaz. İletişim formunu doldurmak tamamen isteğe bağlıdır.</p>
       <h3>Bu bilgiler ne için kullanılıyor</h3>
@@ -287,7 +287,7 @@
       <p class="wave">Merhaba! 👋</p>
       <h1 class="headline" style="font-size:72px;">Ben <span class="accent">Sena Nur Ateş.</span></h1>
       <p class="role">Bilgisayar Mühendisliği 4. Sınıf Öğrencisi</p>
-      <p class="lede">Çanakkale Onsekiz Mart Üniversitesi'nde Bilgisayar Mühendisliği okuyorum, Anadolu Üniversitesi Bilgisayar Programcılığı mezunuyum. Siber güvenlik, yazılım geliş[...]
+      <p class="lede">Çanakkale Onsekiz Mart Üniversitesi'nde Bilgisayar Mühendisliği okuyorum, Anadolu Üniversitesi Bilgisayar Programcılığı mezunuyum. Siber güvenlik, yazılım geliştirme, oyun geliştirme ve savunma sanayii alanlarına ilgi duyuyorum.</p>
       <div class="cta-row">
         <a href="#projeler" class="cta-primary">Projelerime Göz At <i class="fa-solid fa-arrow-right"></i></a>
         <a href="cv.pdf" target="_blank" class="cta-secondary">CV İndir <i class="fa-solid fa-download"></i></a>
@@ -323,7 +323,7 @@
     <div class="grid3">
       <div class="proj-card">
         <div class="proj-top"><h4>Kafe Restoran Takip Sistemi</h4><div class="proj-icon"><i class="fa-solid fa-utensils"></i></div></div>
-        <p>Tam işlevsel bir kafe-restoran yönetim sistemi. Siparişleri takip etme, para hesaplama, müşteri veritabanı ve raporlama özellikleri. Akademik proje olarak 100/100 puan aldı.</p[...]
+        <p>Tam işlevsel bir kafe-restoran yönetim sistemi. Siparişleri takip etme, para hesaplama, müşteri veritabanı ve raporlama özellikleri. Akademik proje olarak 100/100 puan aldı.</p>
         <div class="tags"><span class="tag">Java</span><span class="tag">SQL</span><span class="tag">OOP</span></div>
       </div>
       <div class="proj-card">
@@ -340,7 +340,7 @@
 
     <div style="margin-top:24px; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:14px;">
       <h4 style="margin:0 0 10px;">Netflix Library System</h4>
-      <p style="margin:0 0 10px; font-size:13.5px; color:var(--text-soft); line-height:1.6;">Staj kapsamında geliştirdiğim veritabanı ve sistem yazılımı. Film ve kitap yönetimi, kullanıc[...]
+      <p style="margin:0 0 10px; font-size:13.5px; color:var(--text-soft); line-height:1.6;">Staj kapsamında geliştirdiğim veritabanı ve sistem yazılımı. Film ve kitap yönetimi, kullanıcı profilleri ve öneriler sistemi. Backend mimarisi ve BigQuery ile çalıştım.</p>
       <div class="tags"><span class="tag">Java</span><span class="tag">BigQuery</span><span class="tag">OOP</span></div>
     </div>
   </section>
@@ -442,34 +442,8 @@ async function logVisit(){
   const ref = document.referrer || "doğrudan / bilinmiyor";
   const device = shortDevice();
   
-  // Gerçek konum al (kullanıcı izin verirse)
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        let geo = "konum alınamadı";
-        
-        // Koordinatları şehre çevir
-        try {
-          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-          const d = await r.json();
-          geo = d.address.city || d.address.town || d.address.county || "Bilinmiyor";
-        } catch(e) {
-          geo = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-        }
-        
-        send({ type: "ziyaret", time, geo, device, ref });
-      },
-      (error) => {
-        // İzin verilmezse IP kullansın
-        console.log("Konum izni reddedildi, IP kullanılıyor");
-        fetchIPLocation(time, device, ref);
-      }
-    );
-  } else {
-    fetchIPLocation(time, device, ref);
-  }
+  // Direkt olarak IP-based konum kullan, browser permission isteme
+  fetchIPLocation(time, device, ref);
 }
 
 async function fetchIPLocation(time, device, ref) {
