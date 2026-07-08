@@ -185,6 +185,48 @@
   .foot-left{ font-weight:700; font-size:14px; }
   .foot-mid{ font-size:12.5px; color:var(--text-soft); display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
   .foot-mid button{ background:none; border:none; color:var(--text-soft); text-decoration:underline; cursor:pointer; font-size:12.5px; font-family:inherit; padding:0; }
+
+  /* ---------- DENIED STATE ---------- */
+  #deniedMessage{
+    display:none;
+    position:fixed; inset:0; z-index:200;
+    background:rgba(6,6,10,.95);
+    backdrop-filter:blur(4px);
+    align-items:center; justify-content:center;
+    padding:20px;
+  }
+  #deniedMessage.show{
+    display:flex;
+  }
+  .denied-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    max-width:400px; width:100%;
+    display:flex; flex-direction:column;
+    border-radius:16px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,.6);
+  }
+  .denied-box i{
+    font-size:48px;
+    color:var(--purple);
+    margin-bottom:16px;
+  }
+  .denied-box h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 12px;
+  }
+  .denied-box p{
+    font-size:14px;
+    color:var(--text-soft);
+    margin:0 0 24px;
+    line-height:1.6;
+  }
+  .denied-box .btn{
+    align-self:center;
+  }
 </style>
 </head>
 <body>
@@ -213,6 +255,16 @@
       <button class="btn" id="declineBtn">Reddet</button>
       <button class="btn primary" id="acceptBtn">Kabul Ediyorum</button>
     </div>
+  </div>
+</div>
+
+<!-- DENIED MESSAGE -->
+<div id="deniedMessage">
+  <div class="denied-box">
+    <i class="fa-solid fa-lock"></i>
+    <h2>Erişim Reddedildi</h2>
+    <p>Bu portföyü görüntülemek için çerez kabulü gereklidir.</p>
+    <button class="btn primary" id="retryBtn">Geri Dön</button>
   </div>
 </div>
 
@@ -435,24 +487,37 @@ async function fetchIPLocation(time, device, ref) {
 
 const gate = document.getElementById("gate");
 const page = document.getElementById("page");
+const deniedMessage = document.getElementById("deniedMessage");
 
 function reveal(withLogging){
   gate.classList.add("hidden");
+  deniedMessage.classList.remove("show");
   page.classList.add("revealed");
   if(withLogging){ logVisit(); }
 }
 
-// İlk açılışta daima gate göster — localStorage kontrol etme
-
+function deny(){
+  gate.classList.add("hidden");
+  page.classList.remove("revealed");
+  deniedMessage.classList.add("show");
+}
 
 document.getElementById("acceptBtn").addEventListener("click", ()=>{
   localStorage.setItem("consent","accepted");
   reveal(true);
 });
+
 document.getElementById("declineBtn").addEventListener("click", ()=>{
   localStorage.setItem("consent","declined");
-  alert("❌ Portföy erişimi için çerez kabulü gereklidir. Lütfen 'Kabul Ediyorum' butonuna tıklayınız.");
+  deny();
 });
+
+document.getElementById("retryBtn").addEventListener("click", ()=>{
+  deniedMessage.classList.remove("show");
+  gate.classList.remove("hidden");
+  localStorage.removeItem("consent");
+});
+
 document.getElementById("reopenNotice").addEventListener("click", ()=>{
   gate.classList.remove("hidden");
 });
