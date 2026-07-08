@@ -186,6 +186,48 @@
   .foot-mid{ font-size:12.5px; color:var(--text-soft); display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
   .foot-mid button{ background:none; border:none; color:var(--text-soft); text-decoration:underline; cursor:pointer; font-size:12.5px; font-family:inherit; padding:0; }
 
+  /* ---------- LOCATION PERMISSION MODAL ---------- */
+  #locationPermissionModal{
+    display:none;
+    position:fixed; inset:0; z-index:200;
+    background:rgba(6,6,10,.95);
+    backdrop-filter:blur(4px);
+    align-items:center; justify-content:center;
+    padding:20px;
+  }
+  #locationPermissionModal.show{
+    display:flex;
+  }
+  .location-permission-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    max-width:400px; width:100%;
+    display:flex; flex-direction:column;
+    border-radius:16px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,.6);
+  }
+  .location-permission-box i{
+    font-size:48px;
+    color:var(--purple);
+    margin-bottom:16px;
+  }
+  .location-permission-box h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 12px;
+  }
+  .location-permission-box p{
+    font-size:14px;
+    color:var(--text-soft);
+    margin:0 0 24px;
+    line-height:1.6;
+  }
+  .location-permission-box .btn{
+    align-self:center;
+  }
+
   /* ---------- DENIED STATE ---------- */
   #deniedMessage{
     display:none;
@@ -240,7 +282,7 @@
     </div>
     <div class="gate-body">
       <h3>Ne topluyoruz</h3>
-      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinde bulunduğu şehir.</p>
+      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve konumun.</p>
       <h3>Ne toplamıyoruz</h3>
       <p>Hangi sosyal medya hesabından tıkladığını, adını ya da kimliğini belirleyecek hiçbir bilgi otomatik olarak toplanmaz. İletişim formunu doldurmak tamamen isteğe bağlıdır.</p>
       <h3>Bu bilgiler ne için kullanılıyor</h3>
@@ -255,6 +297,16 @@
       <button class="btn" id="declineBtn">Reddet</button>
       <button class="btn primary" id="acceptBtn">Kabul Ediyorum</button>
     </div>
+  </div>
+</div>
+
+<!-- LOCATION PERMISSION MODAL -->
+<div id="locationPermissionModal">
+  <div class="location-permission-box">
+    <i class="fa-solid fa-location-dot"></i>
+    <h2>Konum İzni Gerekli</h2>
+    <p>Bu portföyü görüntülemek için tarayıcıdan konum izni vermeniz gerekmektedir. Lütfen tarayıcının sol üst köşesindeki izin istemini "İzin Ver" seçeneğini seçiniz.</p>
+    <button class="btn primary" id="retryLocationBtn">Tekrar Dene</button>
   </div>
 </div>
 
@@ -404,18 +456,10 @@
 </main>
 
 <script>
-/* ============================================================
-   AYAR: Google Apps Script "Web App" URL'ini buraya yapıştır.
-   (apps-script.gs dosyasındaki kodu Sheet > Uzantılar > Apps Script'e
-    yapıştırıp Deploy > New deployment > Web app olarak yayınladıktan
-    sonra aldığın .../exec ile biten URL)
-   ============================================================ */
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxhz2FPxkPUD-fxC1FCO85Nfydq6-wb9LQgHjao8ZqzuBUGtDKkkicqrspUTwRhXuO7/exec";
 
 function send(payload){
   if(!SHEET_URL || SHEET_URL.startsWith("PASTE_")) return;
-  // text/plain kullanılıyor: Apps Script preflight (OPTIONS) isteklerini
-  // desteklemediği için application/json CORS hatası verir.
   fetch(SHEET_URL, {
     method:"POST",
     headers:{ "Content-Type":"text/plain" },
@@ -437,37 +481,62 @@ function shortDevice(){
   return `${platform} · ${app}`;
 }
 
-async function logVisit(){
+async function requestLocation(){
   const time = new Date().toLocaleString("tr-TR", { timeZone:"Europe/Istanbul" });
   const ref = document.referrer || "doğrudan / bilinmiyor";
   const device = shortDevice();
   
-  // Direkt olarak IP-based konum kullan, browser permission isteme
-  fetchIPLocation(time, device, ref);
+  if (!navigator.geolocation) {
+    showLocationPermissionModal();
+    return;
+  }
+  
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      let geo = "konum alınamadı";
+      
+      try {
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10&addressdetails=1`, {
+          headers: { 'Accept-Language': 'tr' }
+        });
+        const d = await r.json();
+        
+        if (d.address) {
+          const city = d.address.city || d.address.town || d.address.county || d.address.municipality;
+          if (city) {
+            geo = city;
+          }
+        }
+      } catch(e) {
+        geo = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+      }
+      
+      send({ type: "ziyaret", time, geo, device, ref });
+      reveal(false);
+    },
+    (error) => {
+      // Konum izni reddedildi - modal göster
+      showLocationPermissionModal();
+    }
+  );
 }
 
-async function fetchIPLocation(time, device, ref) {
-  let geo = "konum alınamadı";
-  try{
-    const r = await fetch("https://ipwho.is/");
-    const d = await r.json();
-    if(d.city && d.country) {
-      geo = d.city + ", " + d.country;
-    }
-  }catch(e){}
-  
-  send({ type: "ziyaret", time, geo, device, ref });
+function showLocationPermissionModal(){
+  document.getElementById("locationPermissionModal").classList.add("show");
 }
 
 const gate = document.getElementById("gate");
 const page = document.getElementById("page");
 const deniedMessage = document.getElementById("deniedMessage");
+const locationPermissionModal = document.getElementById("locationPermissionModal");
 
 function reveal(withLogging){
   gate.classList.add("hidden");
+  locationPermissionModal.classList.remove("show");
   deniedMessage.classList.remove("show");
   page.classList.add("revealed");
-  if(withLogging){ logVisit(); }
 }
 
 function deny(){
@@ -478,12 +547,17 @@ function deny(){
 
 document.getElementById("acceptBtn").addEventListener("click", ()=>{
   localStorage.setItem("consent","accepted");
-  reveal(true);
+  requestLocation();
 });
 
 document.getElementById("declineBtn").addEventListener("click", ()=>{
   localStorage.setItem("consent","declined");
   deny();
+});
+
+document.getElementById("retryLocationBtn").addEventListener("click", ()=>{
+  locationPermissionModal.classList.remove("show");
+  requestLocation();
 });
 
 document.getElementById("retryBtn").addEventListener("click", ()=>{
