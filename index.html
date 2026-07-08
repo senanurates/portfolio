@@ -198,7 +198,7 @@
     </div>
     <div class="gate-body">
       <h3>Ne topluyoruz</h3>
-      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinden türetilen yaklaşık konum (şehir/ülke seviyesinde).</p>
+      <p>Bu sayfa açıldığında ziyaretin teknik bazı bilgileri otomatik olarak kaydedilir: ziyaret saati, kullandığın cihaz/tarayıcı türü, sayfaya hangi kaynaktan geldiğin ve IP adresinde[...]
       <h3>Ne toplamıyoruz</h3>
       <p>Hangi sosyal medya hesabından tıkladığını, adını ya da kimliğini belirleyecek hiçbir bilgi otomatik olarak toplanmaz. İletişim formunu doldurmak tamamen isteğe bağlıdır.</p>
       <h3>Bu bilgiler ne için kullanılıyor</h3>
@@ -235,15 +235,15 @@
       <p class="wave">Merhaba! 👋</p>
       <h1 class="headline" style="font-size:72px;">Ben <span class="accent">Sena Nur Ateş.</span></h1>
       <p class="role">Bilgisayar Mühendisliği 4. Sınıf Öğrencisi</p>
-      <p class="lede">Çanakkale Onsekiz Mart Üniversitesi'nde Bilgisayar Mühendisliği okuyorum, Anadolu Üniversitesi Bilgisayar Programcılığı mezunuyum. Siber güvenlik, yazılım geliştirme ve savunma sanayii alanlarına ilgi duyuyorum; öğrenmeyi hiç bırakmıyorum.</p>
+      <p class="lede">Çanakkale Onsekiz Mart Üniversitesi'nde Bilgisayar Mühendisliği okuyorum, Anadolu Üniversitesi Bilgisayar Programcılığı mezunuyum. Siber güvenlik, yazılım geliş[...]
       <div class="cta-row">
         <a href="#projeler" class="cta-primary">Projelerime Göz At <i class="fa-solid fa-arrow-right"></i></a>
         <a href="cv.pdf" target="_blank" class="cta-secondary">CV İndir <i class="fa-solid fa-download"></i></a>
       </div>
       <div class="socials">
-        <a href="#" target="_blank" rel="noopener" title="LinkedIn linkini ekle"><i class="fa-brands fa-linkedin-in"></i></a>
-        <a href="#" target="_blank" rel="noopener" title="GitHub linkini ekle"><i class="fa-brands fa-github"></i></a>
-        <a href="mailto:senanyrates@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+        <a href="https://www.linkedin.com/in/sena-nur-ate%C5%9F/" target="_blank" rel="noopener" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="https://github.com/senanurates" target="_blank" rel="noopener" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="mailto:senanyrates@gmail.com" title="E-Mail"><i class="fa-solid fa-envelope"></i></a>
       </div>
     </div>
     <div class="photo-wrap">
@@ -271,7 +271,7 @@
     <div class="grid3">
       <div class="proj-card">
         <div class="proj-top"><h4>Kafe Restoran Takip Sistemi</h4><div class="proj-icon"><i class="fa-solid fa-utensils"></i></div></div>
-        <p>Tam işlevsel bir kafe-restoran yönetim sistemi. Siparişleri takip etme, para hesaplama, müşteri veritabanı ve raporlama özellikleri. Akademik proje olarak 100/100 puan aldı.</p>
+        <p>Tam işlevsel bir kafe-restoran yönetim sistemi. Siparişleri takip etme, para hesaplama, müşteri veritabanı ve raporlama özellikleri. Akademik proje olarak 100/100 puan aldı.</p[...]
         <div class="tags"><span class="tag">Java</span><span class="tag">SQL</span><span class="tag">OOP</span></div>
       </div>
       <div class="proj-card">
@@ -288,7 +288,7 @@
 
     <div style="margin-top:24px; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:14px;">
       <h4 style="margin:0 0 10px;">Netflix Library System</h4>
-      <p style="margin:0 0 10px; font-size:13.5px; color:var(--text-soft); line-height:1.6;">Staj kapsamında geliştirdiğim veritabanı ve sistem yazılımı. Film ve kitap yönetimi, kullanıcı otentikasyonu, karmaşık sorgulamalar ve veri analizi özelliklerine sahip. Java ve BigQuery entegrasyonu ile geliştirildi.</p>
+      <p style="margin:0 0 10px; font-size:13.5px; color:var(--text-soft); line-height:1.6;">Staj kapsamında geliştirdiğim veritabanı ve sistem yazılımı. Film ve kitap yönetimi, kullanıc[...]
       <div class="tags"><span class="tag">Java</span><span class="tag">BigQuery</span><span class="tag">OOP</span></div>
     </div>
   </section>
@@ -451,7 +451,7 @@ document.getElementById("acceptBtn").addEventListener("click", ()=>{
 });
 document.getElementById("declineBtn").addEventListener("click", ()=>{
   localStorage.setItem("consent","declined");
-  reveal(false);
+  alert("❌ Portföy erişimi için çerez kabulü gereklidir. Lütfen 'Kabul Ediyorum' butonuna tıklayınız.");
 });
 document.getElementById("reopenNotice").addEventListener("click", ()=>{
   gate.classList.remove("hidden");
